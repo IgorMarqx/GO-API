@@ -2,24 +2,28 @@ package request
 
 import (
 	"apiGo/cmd/model"
-	"errors"
 	"regexp"
 )
 
-func Validate(user model.User) error {
+type ValidationResult struct {
+	Error   bool
+	Message string
+}
+
+func Validate(user model.User) ValidationResult {
 	if user.Name == "" {
-		return errors.New("name is required")
+		return ValidationResult{Error: true, Message: "name is required"}
 	}
 
 	if user.Email == "" {
-		return errors.New("email is required")
+		return ValidationResult{Error: true, Message: "email is required"}
 	}
 
 	if !isValidaEmail(user.Email) {
-		return errors.New("invalid format email")
+		return ValidationResult{Error: true, Message: "email is invalid"}
 	}
 
-	return nil
+	return ValidationResult{Error: false, Message: ""}
 }
 
 func isValidaEmail(email string) bool {
